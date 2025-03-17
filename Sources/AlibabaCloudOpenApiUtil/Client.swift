@@ -347,7 +347,7 @@ open class Client {
         return canonicalizedKeys
     }
 
-    private static func buildCanonicalizedResource(query: [String: Any]) -> String {
+    public static func buildCanonicalizedResource(query: [String: Any]) -> String {
         var keys: [String] = []
         for (key, _) in query {
             keys.append(key)
@@ -359,9 +359,8 @@ open class Client {
             result.append(sep)
             result.append(key.urlEncode())
             result.append("=")
-            if query[key] is String && !(query[key] as! String).isEmpty
-                || (!(query[key] is String) && query[key] != nil) {
-                result.append("\(query[key] ?? "")")
+            if let value = query[key] as? String, !value.isEmpty {
+                result.append(value.urlEncode())
             }
             sep = SEPARATOR
         }

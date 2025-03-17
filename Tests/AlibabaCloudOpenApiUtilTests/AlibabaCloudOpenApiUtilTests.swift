@@ -267,6 +267,35 @@ final class AlibabaCloudOpenApiUtilTests: XCTestCase {
         XCTAssertEqual("ACS3-HMAC-SHA256 Credential=acesskey,SignedHeaders=x-acs-test,Signature=02e81f9f3cc8839151b0c7278024cbc4bfc9fa786085a0b8305f825f17b5dae7", auth)
     }
 
+    func testBuildCanonicalizedResource() {
+        let query: [String: Any] = [
+            "b": "值2",
+            "a": "值1",
+            "empty": "",
+            "notString": 123,
+            "nilValue": NSNull()
+        ]
+
+        let result = Client.buildCanonicalizedResource(query: query)
+        let expected = "a=%E5%80%BC1&b=%E5%80%BC2&empty=&nilValue=&notString="
+
+        XCTAssertEqual(result, expected)
+    }
+
+    func testBuildCanonicalizedResourceWithArrayValue() {
+        let query: [String: Any] = [
+            "key1": "值1",
+            "key2": ["arrayValue1", "arrayValue2"],
+            "key3": "",
+            "key4": "值4"
+        ]
+
+        let result = Client.buildCanonicalizedResource(query: query)
+        let expected = "key1=%E5%80%BC1&key2=&key3=&key4=%E5%80%BC4"
+
+        XCTAssertEqual(result, expected)
+    }
+
     static var allTests = [
         ("testConvert", testConvert),
         ("testGetStringToSign", testGetStringToSign),
